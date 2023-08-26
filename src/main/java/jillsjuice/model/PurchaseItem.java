@@ -13,11 +13,7 @@ public class PurchaseItem {
   private Date shipDate;
 
   public PurchaseItem(
-      UUID id,
-      String description,
-      int packageSize,
-      BigDecimal quantity,
-      BigDecimal price) {
+      UUID id, String description, int packageSize, BigDecimal quantity, BigDecimal price) {
     this.id = id;
     this.description = description;
     this.packageSize = packageSize;

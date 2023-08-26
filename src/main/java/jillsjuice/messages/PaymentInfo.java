@@ -1,29 +1,37 @@
 package jillsjuice.messages;
 
-import jillsjuice.model.CreditCard;
 import java.math.BigDecimal;
 import java.util.UUID;
+import jillsjuice.model.CreditCard;
+import jillsjuice.model.Customer;
 
 public class PaymentInfo {
-    private final CreditCard creditCard;
-    private final BigDecimal paymentAmount;
-    private final UUID purchaseId;
+  private final CreditCard creditCard;
+  private final Customer customer;
+  private final BigDecimal paymentAmount;
+  private final UUID purchaseId;
 
-    public PaymentInfo(CreditCard creditCard, BigDecimal paymentAmount, UUID purchaseId) {
-        this.creditCard = creditCard;
-        this.paymentAmount = paymentAmount;
-        this.purchaseId = purchaseId;
-    }
+  public PaymentInfo(
+      Customer customer, CreditCard creditCard, BigDecimal paymentAmount, UUID purchaseId) {
+    this.customer = customer;
+    this.creditCard = creditCard;
+    this.paymentAmount = paymentAmount;
+    this.purchaseId = purchaseId;
+  }
 
-    public CreditCard getCreditCard() {
-        return creditCard;
-    }
+  public Customer getCustomer() {
+    return this.customer;
+  }
 
-    public BigDecimal getPaymentAmount() {
-        return paymentAmount;
-    }
+  public CreditCard getCreditCard() {
+    return this.creditCard;
+  }
 
-    public UUID getPurchaseId() {
-        return purchaseId;
-    }
+  public BigDecimal getPaymentAmount() {
+    return this.paymentAmount;
+  }
+
+  public UUID getPurchaseId() {
+    return this.purchaseId;
+  }
 }

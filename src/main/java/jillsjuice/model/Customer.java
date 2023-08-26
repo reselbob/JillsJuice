@@ -1,7 +1,7 @@
 package jillsjuice.model;
 
-import org.json.JSONObject;
 import java.util.UUID;
+import org.json.JSONObject;
 
 public class Customer {
   private final UUID id;

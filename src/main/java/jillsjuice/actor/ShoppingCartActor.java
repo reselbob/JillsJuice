@@ -37,16 +37,16 @@ public class ShoppingCartActor extends AbstractActor {
   @Override
   public Receive createReceive() {
     return receiveBuilder()
-        .match(
-            AddItems.class,
-            message -> {
-              this.purchaseItems.addAll(message.getPurchaseItems());
-            })
+        .match(AddItems.class,this::handleAddItems)
         .match(CheckoutInfo.class, this::handleCheckout)
         .build();
   }
 
-  private void handleCheckout(CheckoutInfo checkoutInfo) {
+  private void handleAddItems(AddItems message) {
+    this.purchaseItems.addAll(message.getPurchaseItems());
+  }
+
+  private void handleCheckout(CheckoutInfo message) {
     //ActorSystem system = ActorSystem.create("ShoppingCartActorSystem");
     // pay for the items
     this.getLog().info("Sending payment message");
@@ -60,14 +60,14 @@ public class ShoppingCartActor extends AbstractActor {
     Purchase purchase = new Purchase(UUID.randomUUID(), this.purchaseItems);
 
     BigDecimal totalAmount =
-        checkoutInfo.getPurchaseItems().stream()
+            message.getPurchaseItems().stream()
             .map(PurchaseItem::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     PaymentInfo paymentInfo =
         new PaymentInfo(
-            checkoutInfo.getCustomer(),
-            checkoutInfo.getCreditCard(),
+                message.getCustomer(),
+                message.getCreditCard(),
             totalAmount,
             purchase.getId());
 
@@ -87,10 +87,10 @@ public class ShoppingCartActor extends AbstractActor {
     ActorRef shippingActor = this.actorSystem.actorOf(Props.create(ShippingActor.class,this.actorSystem), "shippingActor");
     ShippingInfo shippingInfo =
         new ShippingInfo(
-            checkoutInfo.getCustomer(),
-            checkoutInfo.getPurchaseItems(),
+                message.getCustomer(),
+                message.getPurchaseItems(),
             "FEDEX",
-            checkoutInfo.getShippingAddress());
+                message.getShippingAddress());
 
     future = Patterns.ask(shippingActor, shippingInfo, timeout);
     try {

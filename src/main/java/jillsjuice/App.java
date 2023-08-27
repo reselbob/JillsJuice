@@ -66,6 +66,5 @@ public class App {
         new CheckoutInfo(creditCard, purchaseItems, customer, address, address);
 
     shoppingCartActor.tell(checkoutInfo, shoppingCartActor);
-
   }
 }

@@ -15,8 +15,8 @@ public class PaymentActor extends AbstractActor {
   private final ActorSystem actorSystem;
   private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
- //Declare the parent system
-  public PaymentActor(ActorSystem actorSystem){
+  // Declare the parent system
+  public PaymentActor(ActorSystem actorSystem) {
     this.actorSystem = actorSystem;
   }
 
@@ -26,7 +26,9 @@ public class PaymentActor extends AbstractActor {
   }
 
   private void handlePayment(PaymentInfo message) {
-    ActorRef customerActor = this.actorSystem.actorOf(Props.create(CustomerActor.class, this.actorSystem), "shippingCustomerActor");
+    ActorRef customerActor =
+        this.actorSystem.actorOf(
+            Props.create(CustomerActor.class, this.actorSystem), "shippingCustomerActor");
 
     this.log.info(
         "Executing payment for purchase id {} for the amount of {} the using credit card {}.",

@@ -10,11 +10,12 @@ import jillsjuice.messages.ShippingReceipt;
 public class CustomerActor extends AbstractActor {
   // We'll leave a reference to the base system
   // in, just in case CustomerActor wants to use it later
-  //on
+  // on
   private final ActorSystem actorSystem;
   private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
-  //Declare the parent system
-  public CustomerActor(ActorSystem actorSystem){
+
+  // Declare the parent system
+  public CustomerActor(ActorSystem actorSystem) {
     this.actorSystem = actorSystem;
   }
 

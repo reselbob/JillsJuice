@@ -26,7 +26,7 @@ public class ShoppingCartActor extends AbstractActor {
 
   private final ActorSystem actorSystem;
 
-  public ShoppingCartActor(ActorSystem actorSystem){
+  public ShoppingCartActor(ActorSystem actorSystem) {
     this.actorSystem = actorSystem;
   }
 
@@ -37,7 +37,7 @@ public class ShoppingCartActor extends AbstractActor {
   @Override
   public Receive createReceive() {
     return receiveBuilder()
-        .match(AddItems.class,this::handleAddItems)
+        .match(AddItems.class, this::handleAddItems)
         .match(CheckoutInfo.class, this::handleCheckout)
         .build();
   }
@@ -47,11 +47,13 @@ public class ShoppingCartActor extends AbstractActor {
   }
 
   private void handleCheckout(CheckoutInfo message) {
-    //ActorSystem system = ActorSystem.create("ShoppingCartActorSystem");
+    // ActorSystem system = ActorSystem.create("ShoppingCartActorSystem");
     // pay for the items
     this.getLog().info("Sending payment message");
 
-    ActorRef paymentActor = this.actorSystem.actorOf(Props.create(PaymentActor.class, this.actorSystem), "paymentActor");
+    ActorRef paymentActor =
+        this.actorSystem.actorOf(
+            Props.create(PaymentActor.class, this.actorSystem), "paymentActor");
 
     // Timeout for the ask pattern
     Timeout timeout = new Timeout(Duration.create(5, TimeUnit.SECONDS));
@@ -60,16 +62,13 @@ public class ShoppingCartActor extends AbstractActor {
     Purchase purchase = new Purchase(UUID.randomUUID(), this.purchaseItems);
 
     BigDecimal totalAmount =
-            message.getPurchaseItems().stream()
+        message.getPurchaseItems().stream()
             .map(PurchaseItem::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     PaymentInfo paymentInfo =
         new PaymentInfo(
-                message.getCustomer(),
-                message.getCreditCard(),
-            totalAmount,
-            purchase.getId());
+            message.getCustomer(), message.getCreditCard(), totalAmount, purchase.getId());
 
     Future<Object> future = Patterns.ask(paymentActor, paymentInfo, timeout);
 
@@ -84,13 +83,15 @@ public class ShoppingCartActor extends AbstractActor {
     // ship the items
     this.getLog().info("Sending shipping message");
 
-    ActorRef shippingActor = this.actorSystem.actorOf(Props.create(ShippingActor.class,this.actorSystem), "shippingActor");
+    ActorRef shippingActor =
+        this.actorSystem.actorOf(
+            Props.create(ShippingActor.class, this.actorSystem), "shippingActor");
     ShippingInfo shippingInfo =
         new ShippingInfo(
-                message.getCustomer(),
-                message.getPurchaseItems(),
+            message.getCustomer(),
+            message.getPurchaseItems(),
             "FEDEX",
-                message.getShippingAddress());
+            message.getShippingAddress());
 
     future = Patterns.ask(shippingActor, shippingInfo, timeout);
     try {

@@ -15,7 +15,7 @@ public class ShippingActor extends AbstractActor {
   private final ActorSystem actorSystem;
   private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
-  public ShippingActor(ActorSystem actorSystem){
+  public ShippingActor(ActorSystem actorSystem) {
     this.actorSystem = actorSystem;
   }
 
@@ -26,7 +26,9 @@ public class ShippingActor extends AbstractActor {
 
   private void handleShipping(ShippingInfo message) {
     // Set up the Customer actor which will receive payment and shipping receipts
-    ActorRef customerActor = this.actorSystem.actorOf(Props.create(CustomerActor.class, this.actorSystem), "customerActor");
+    ActorRef customerActor =
+        this.actorSystem.actorOf(
+            Props.create(CustomerActor.class, this.actorSystem), "customerActor");
 
     this.log.info(
         "Shipping {} purchase items to {} at {} using {}.",

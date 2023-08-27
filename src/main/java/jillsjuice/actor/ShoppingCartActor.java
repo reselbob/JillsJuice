@@ -47,24 +47,25 @@ public class ShoppingCartActor extends AbstractActor {
   }
 
   private void handleCheckout(CheckoutInfo message) {
-    // ActorSystem system = ActorSystem.create("ShoppingCartActorSystem");
-    // pay for the items
-    this.getLog().info("Sending payment message");
-
-    ActorRef paymentActor =
-        this.actorSystem.actorOf(
-            Props.create(PaymentActor.class, this.actorSystem), "paymentActor");
-
     // Timeout for the ask pattern
     Timeout timeout = new Timeout(Duration.create(5, TimeUnit.SECONDS));
 
     // Use the ask pattern to send a message to the PaymentActor actor and get a response
     Purchase purchase = new Purchase(UUID.randomUUID(), this.purchaseItems);
+    // pay for the items
+    sendPayment(message, timeout, purchase);
+  }
 
+  private void sendPayment(CheckoutInfo message, Timeout timeout, Purchase purchase) {
+    this.getLog().info("Sending payment message");
     BigDecimal totalAmount =
         message.getPurchaseItems().stream()
             .map(PurchaseItem::getTotal)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    ActorRef paymentActor =
+            this.actorSystem.actorOf(
+                    Props.create(PaymentActor.class, this.actorSystem), "paymentActor");
 
     PaymentInfo paymentInfo =
         new PaymentInfo(
@@ -75,14 +76,17 @@ public class ShoppingCartActor extends AbstractActor {
     try {
       // Wait for the future to complete and get the response
       String response = (String) Await.result(future, timeout.duration());
-      this.getLog().info("Received response for payment {}.", response);
+      this.getLog().info("Received response for payment {}, now shipping items.", response);
+      // ship the items
+      shipItems(message, timeout);
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
 
-    // ship the items
+  private void shipItems(CheckoutInfo message, Timeout timeout) {
     this.getLog().info("Sending shipping message");
-
+    Future<Object> future;
     ActorRef shippingActor =
         this.actorSystem.actorOf(
             Props.create(ShippingActor.class, this.actorSystem), "shippingActor");

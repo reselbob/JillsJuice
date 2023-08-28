@@ -9,7 +9,7 @@ mvn compile exec:exec
 
 # Understanding the demonstration application
 
-This GitHub project shows how to implement the Actor Model as a simple shopping cart for Jill’s Juice, a fictitious e-commerce company that sells a variety of gourmet juices. The implementation uses the Akka framework under Java.
+This GitHub project shows how to implement the Actor Model as a simple shopping cart for Jill’s Juice, a fictitious e-commerce company that sells a variety of gourmet juices. The implementation uses the [Akka framework under Java](https://doc.akka.io/docs/akka/2.8.4/index.html?language=java).
 
 ![model](./images/jills-juice-model-01.png)
 

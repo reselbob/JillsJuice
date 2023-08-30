@@ -1,6 +1,8 @@
 # Jill's Juice
 The project demonstrates the modes of message communication in the Actor model.
 
+The project uses the [Akka framework](https://akka.io/docs/) running under Java.
+
 # To run
 
 ```
